@@ -5,10 +5,7 @@ import com.rohlik.useradminbe.DTO.UserDTO;
 import com.rohlik.useradminbe.DTO.UserDTO2;
 import com.rohlik.useradminbe.models.User;
 import org.springframework.stereotype.Service;
-
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -86,11 +83,9 @@ public class UserService {
         List<User> sortedUsers = sortUsers(filteredUsers, sortField, sortOrder);
 
         List<User> lazyLoadedUsers = new ArrayList<>();
-        for (int i = 0; i < offset+rows; i++) {
-            if (i >= offset && i <offset+rows) {
-                if (i < sortedUsers.size()) {
+        for (int i = offset; i < offset+rows; i++) {
+            if (i < offset+rows && i < sortedUsers.size()) {
                     lazyLoadedUsers.add(sortedUsers.get(i));
-                }
             }
         }
 
@@ -205,21 +200,21 @@ public class UserService {
         );
         String active;
         int telephone;
+        Random random = new Random();
 
-        for (int i = 0; i < surnames.size(); i++) {
-            for (int j = 0; j < firstNames.size(); j++) {
-                Random random = new Random();
+        for (String surname : surnames) {
+            for (String firstName : firstNames) {
                 if (random.nextInt(2) == 1) {
                     active = "Active";
                 } else {
                     active = "Deactivated";
                 }
                 telephone = random.nextInt(876543211) + 123456789;
-                userData.add(new User(userData.size()+1,
-                        firstNames.get(j),
-                        surnames.get(i),
+                userData.add(new User(userData.size() + 1,
+                        firstName,
+                        surname,
                         active,
-                        firstNames.get(j).toLowerCase() + '.' + surnames.get(i).toLowerCase() + "@gmail.com",
+                        firstName.toLowerCase() + '.' + surname.toLowerCase() + "@gmail.com",
                         telephone,
                         randomDate()));
             }
@@ -308,7 +303,7 @@ public class UserService {
             return u2.getTelephone() - u1.getTelephone();
         }
     }
-        class CreationDateComparatorAsc implements Comparator<User> {
+    class CreationDateComparatorAsc implements Comparator<User> {
         @Override
         public int compare(User u1, User u2) {
             if (u1.getCreationDate().before(u2.getCreationDate())) {

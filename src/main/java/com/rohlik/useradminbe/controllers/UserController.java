@@ -46,7 +46,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("user")
+    @PutMapping("/user")
     public ResponseEntity<?> editUser(@RequestBody UserDTO2 user) {
         if (userService.editUser(user)) {
             return new ResponseEntity<>(HttpStatus.OK);
